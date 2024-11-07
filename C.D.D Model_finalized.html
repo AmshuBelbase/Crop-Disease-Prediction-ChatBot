@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teachable Machine Image Model</title>
+    <style>
+      #webcam-container,
+      #label-container,
+      #image-container {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Teachable Machine Image Model</div>
+    <button type="button" onclick="initWebcam()">Start Webcam</button>
+    <input type="file" accept="image/*" onchange="handleImageUpload(event)" />
+    <div id="webcam-container"></div>
+    <div id="image-container"></div>
+    <div id="label-container"></div>
+
+    <!-- TensorFlow.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <!-- Teachable Machine Image Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <script type="text/javascript">
+      const URL = "https://teachablemachine.withgoogle.com/models/F5LBGsQm8/";
+
+      let model, webcam, labelContainer, maxPredictions;
+
+      // Load the image model and setup the webcam
+      async function loadModel() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        labelContainer = document.getElementById("label-container");
+        labelContainer.appendChild(document.createElement("div"));
+      }
+
+      async function initWebcam() {
+        await loadModel();
+
+        const flip = true; // whether to flip the webcam
+        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(webcamLoop);
+
+        // Append webcam to the DOM
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+      }
+
+      async function webcamLoop() {
+        webcam.update(); // update the webcam frame
+        await predict(webcam.canvas);
+        window.requestAnimationFrame(webcamLoop);
+      }
+
+      // Handle image upload from user's computer
+      async function handleImageUpload(event) {
+        if (!model) {
+          await loadModel();
+        }
+
+        const imageContainer = document.getElementById("image-container");
+        imageContainer.innerHTML = ""; // Clear any previous image
+
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          const imgElement = document.createElement("img");
+          imgElement.src = event.target.result;
+          imgElement.onload = () => predict(imgElement);
+
+          imageContainer.appendChild(imgElement);
+        };
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // Run the image (from webcam or file) through the image model
+      async function predict(inputElement) {
+        const prediction = await model.predict(inputElement);
+        let maxPrediction = prediction[0];
+
+        // Find the prediction with the highest probability
+        for (let i = 1; i < maxPredictions; i++) {
+          if (prediction[i].probability > maxPrediction.probability) {
+            maxPrediction = prediction[i];
+          }
+        }
+
+        // Display only the max probability prediction
+        labelContainer.childNodes[0].innerHTML = `Disease: ${
+          maxPrediction.className
+        } - Probability: ${maxPrediction.probability.toFixed(2)}`;
+      }
+    </script>
+  </body>
+</html>

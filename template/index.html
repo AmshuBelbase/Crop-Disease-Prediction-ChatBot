@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Crop Recognition AI</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='styles/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-box">
+        <div class="chat-header">
+          <h1>Crop Recognition AI</h1>
+        </div>
+        <div class="chat-history"></div>
+        <div class="chat-input">
+          <label for="image-upload" class="upload-button">Upload Image</label>
+          <input
+            type="file"
+            id="image-upload"
+            accept="image/*"
+            style="display: none"
+            onchange="handleImageUpload(event)"
+          />
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Ask about your crop..."
+          />
+          <button id="send-button">Send</button>
+        </div>
+      </div>
+      <div class="language-menu">
+        <select id="language-select">
+          <!-- <option value="english">English</option>
+          <option value="hindi">Hindi</option>
+          <option value="tamil">Tamil</option> -->
+        </select>
+      </div>
+    </div>
+
+    <!-- TensorFlow.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <!-- Teachable Machine Image Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <script src="static/js/script.js"></script>
+
+    <!-- <script src="static/js/script_lan.js"></script> -->
+  </body>
+</html>

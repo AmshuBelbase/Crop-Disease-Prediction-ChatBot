@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload Image</title>
+    
+</head>
+
+<body>
+    <h1>Upload an Image</h1>
+    <form method="post" action="{{ url_for('detect') }}" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+    <br>
+    <form method="post" action="{{ url_for('llm') }}">
+        <input type="text" name="name">
+        <input type="submit" value="Upload">
+    </form>
+</body>
+
+</html>
