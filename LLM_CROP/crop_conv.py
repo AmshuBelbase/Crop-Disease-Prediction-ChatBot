@@ -99,7 +99,11 @@ def elab_dis(text):
             ans = response_message.content
 
         # Using regular expression to extract pesticide names
-        pesticides = re.findall(r'Pesticide:\s*(.+)', ans)
+        # pesticides = re.findall(r'Pesticide:\s*(.+)', ans)
+        pesticides = re.findall(
+            r'(?:Pesticide|Fungicide|Herbicide|Insecticide):\s*(.+)', ans)
+
+        print(pesticides)
         if pesticides:
             ans += "<br><br>Pesticide Links:"
 
