@@ -1,6 +1,6 @@
 # Crop-Disease-Prediction-ChatBot
 
-Chatbot to answer query focused on crop's diseases.
+Chatbot to answer queries focused on crop diseases.
 
 SETUP:
 
